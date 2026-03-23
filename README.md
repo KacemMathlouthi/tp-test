@@ -1,15 +1,35 @@
-# tp-test
+# TP - Tests unitaires avec Vitest
 
-To install dependencies:
+## Structure
+
+```
+exercices/          # Exercices du TP
+  src/              # Fonctions (math, stringUtils, sort, priceUtils, fetchUser)
+  tests/            # Tests unitaires correspondants
+projet/             # Mini-projet Todo App
+  src/todo.js       # Logique métier
+  public/           # Interface web
+  tests/            # Tests unitaires
+```
+
+## Installation
 
 ```bash
 bun install
 ```
 
-To run:
+## Commandes
 
 ```bash
-bun run index.ts
+bun run dev             # Lancer le serveur Todo App (http://localhost:3000)
+bun run test            # Lancer tous les tests
+bun run test:coverage   # Lancer les tests avec couverture de code
 ```
 
-This project was created using `bun init` in bun v1.3.9. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+## Tests
+
+![Tests](screenshots/tests.png)
+
+## Couverture de code
+
+![Coverage](screenshots/coverage.png)
