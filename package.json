@@ -1,0 +1,13 @@
+{
+  "name": "tp-test",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "vitest": "^4.1.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
