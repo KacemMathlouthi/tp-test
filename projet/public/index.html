@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Todo</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>Todo</h1>
+
+    <div class="input-row">
+      <input type="text" id="todo-input" placeholder="What needs to be done?" />
+      <button id="add-btn">Add</button>
+    </div>
+
+    <div class="filters">
+      <button class="active" data-filter="all">All</button>
+      <button data-filter="active">Active</button>
+      <button data-filter="completed">Done</button>
+    </div>
+
+    <ul class="todo-list" id="todo-list"></ul>
+    <p class="stats" id="stats"></p>
+  </div>
+
+  <script type="module">
+    import { addTodo, removeTodo, toggleTodo, filterTodos, countTodos } from "/todo.js";
+
+    let todos = [];
+    let currentFilter = "all";
+
+    const input = document.getElementById("todo-input");
+    const addBtn = document.getElementById("add-btn");
+    const list = document.getElementById("todo-list");
+    const statsEl = document.getElementById("stats");
+    const filterBtns = document.querySelectorAll(".filters button");
+
+    function render() {
+      const filtered = filterTodos(todos, currentFilter);
+
+      if (filtered.length === 0) {
+        list.innerHTML = '<li class="empty">No tasks yet</li>';
+      } else {
+        list.innerHTML = filtered.map(todo => `
+          <li class="todo-item ${todo.completed ? "completed" : ""}" data-id="${todo.id}">
+            <input type="checkbox" ${todo.completed ? "checked" : ""} />
+            <span>${todo.title}</span>
+            <button class="delete-btn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </li>
+        `).join("");
+      }
+
+      const { active, completed } = countTodos(todos);
+      statsEl.textContent = todos.length > 0 ? `${active} remaining · ${completed} completed` : "";
+    }
+
+    function handleAdd() {
+      const title = input.value.trim();
+      if (!title) return;
+      todos = addTodo(todos, title);
+      input.value = "";
+      render();
+    }
+
+    addBtn.addEventListener("click", handleAdd);
+    input.addEventListener("keydown", e => { if (e.key === "Enter") handleAdd(); });
+
+    list.addEventListener("change", e => {
+      const id = Number(e.target.closest(".todo-item").dataset.id);
+      todos = toggleTodo(todos, id);
+      render();
+    });
+
+    list.addEventListener("click", e => {
+      const btn = e.target.closest(".delete-btn");
+      if (!btn) return;
+      const id = Number(btn.closest(".todo-item").dataset.id);
+      todos = removeTodo(todos, id);
+      render();
+    });
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentFilter = btn.dataset.filter;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
